@@ -11,6 +11,7 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0.36",
     "asyncpg>=0.30.0",
     "dependency-injector>=4.48.0",
+    "livekit-api>=1.0.0",
 ]
 
 [build-system]
@@ -25,6 +26,7 @@ dev = [
     "httpx>=0.28.0",
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
+    "flake8>=7.1.0",
 ]
 
 [tool.pytest.ini_options]

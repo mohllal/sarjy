@@ -5,6 +5,7 @@ from dependency_injector import containers, providers
 from app.config import Settings
 from app.db.engine import create_engine, create_session_factory
 from app.services.health import HealthService
+from app.services.livekit import LiveKitTokenService
 from app.uow.sqlalchemy import SqlAlchemyUnitOfWork
 
 
@@ -12,6 +13,7 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
             "app.routes.health",
+            "app.routes.livekit",
         ]
     )
 
@@ -27,4 +29,9 @@ class Container(containers.DeclarativeContainer):
         HealthService,
         settings=settings,
         uow_factory=uow.provider,
+    )
+
+    livekit_token_service = providers.Factory(
+        LiveKitTokenService,
+        settings=settings,
     )

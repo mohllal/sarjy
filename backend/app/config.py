@@ -13,12 +13,17 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_env: str = "development"
-    database_url: str = "postgresql+asyncpg://sarjy:sarjy@localhost:5433/sarjy"
-    livekit_url: str = ""
-    livekit_api_key: str = ""
-    livekit_api_secret: str = ""
-    openweather_api_key: str = ""
+    app_env: str = Field(min_length=1, default="development")
+    database_url: str = Field(
+        min_length=1, default="postgresql+asyncpg://sarjy:sarjy@localhost:5433/sarjy"
+    )
+
+    livekit_url: str = Field(min_length=1)
+    livekit_api_key: str = Field(min_length=1)
+    livekit_api_secret: str = Field(min_length=1)
+    livekit_agent_name: str = Field(min_length=1, default="sarjy")
+
+    openweather_api_key: str = Field(min_length=1, default="")
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:3000", "http://localhost:8080"]
     )
