@@ -1,4 +1,4 @@
-.PHONY: up down api agent frontend test install
+.PHONY: up down api agent frontend test install migrate
 
 PORT ?= 8000
 FRONTEND_PORT ?= 3000
@@ -13,6 +13,9 @@ install:
 	cd backend && uv sync --all-groups
 	cd agent && uv sync --all-groups
 	cd frontend && npm ci
+
+migrate:
+	cd backend && uv run alembic upgrade head
 
 api:
 	cd backend && uv sync --all-groups && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port $(PORT)

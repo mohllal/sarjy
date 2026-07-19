@@ -1,18 +1,12 @@
-"""Sarjy LiveKit Agents worker.
-
-Verified against LiveKit docs:
-https://docs.livekit.io/agents/start/voice-ai/
-https://docs.livekit.io/agents/server/agent-dispatch/
-"""
+"""Sarjy LiveKit Agents worker entrypoint."""
 
 from __future__ import annotations
 
-import json
 import logging
+import json
 
 from livekit import agents
 from livekit.agents import (
-    Agent,
     AgentServer,
     AgentSession,
     JobContext,
@@ -21,21 +15,20 @@ from livekit.agents import (
     room_io,
 )
 
+from assistants import SarjyAssistant
+from integrations import BackendApiClient
 from prompts import load_prompt
+from schemas import SessionData
+from session import (
+    attach_conversation_persistence,
+    load_history_chat_ctx,
+)
 from settings import get_settings
 
 logger = logging.getLogger("sarjy.agent")
 
 settings = get_settings()
-
-
-class SarjyAssistant(Agent):
-    def __init__(self) -> None:
-        super().__init__(
-            instructions=load_prompt("system", settings.system_prompt_version),
-        )
-
-
+backend = BackendApiClient(settings.backend_api_base_url)
 server = AgentServer()
 
 
@@ -49,7 +42,14 @@ async def sarjy_agent(ctx: JobContext) -> None:
         settings.livekit_agent_name,
     )
 
-    session = AgentSession(
+    chat_ctx = await load_history_chat_ctx(
+        backend,
+        username,
+        limit=settings.conversation_history_limit,
+    )
+
+    session = AgentSession[SessionData](
+        userdata=SessionData(username=username),
         stt=inference.STT(model="deepgram/nova-3", language="multi"),
         llm=inference.LLM(model="google/gemma-4-31b-it"),
         tts=inference.TTS(
@@ -61,9 +61,15 @@ async def sarjy_agent(ctx: JobContext) -> None:
         ),
     )
 
+    attach_conversation_persistence(session, backend, username)
+
     await session.start(
         room=ctx.room,
-        agent=SarjyAssistant(),
+        agent=SarjyAssistant(
+            backend=backend,
+            settings=settings,
+            chat_ctx=chat_ctx,
+        ),
         room_options=room_io.RoomOptions(
             audio_input=room_io.AudioInputOptions(),
         ),

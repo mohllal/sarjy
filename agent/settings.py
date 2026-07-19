@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,7 +21,10 @@ class Settings(BaseSettings):
     livekit_api_secret: str = Field(min_length=1)
     livekit_agent_name: str = Field(min_length=1, default="sarjy")
 
-    system_prompt_version: str = Field(min_length=1, default="1.0.0")
+    backend_api_base_url: str = Field(min_length=1, default="http://localhost:8000")
+    conversation_history_limit: int = Field(default=20, ge=1, le=100)
+
+    system_prompt_version: str = Field(min_length=1, default="1.1.0")
     greeting_prompt_version: str = Field(min_length=1, default="1.0.0")
 
 
