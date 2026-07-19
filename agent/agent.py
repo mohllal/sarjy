@@ -16,11 +16,11 @@ from livekit.agents import (
 )
 
 from assistants import SarjyAssistant
-from integrations import BackendApiClient
-from prompts import load_prompt
+from integrations import BackendApiClient, OpenWeatherClient
 from schemas import SessionData
 from session import (
     attach_conversation_persistence,
+    greeting_instructions,
     load_history_chat_ctx,
 )
 from settings import get_settings
@@ -29,6 +29,7 @@ logger = logging.getLogger("sarjy.agent")
 
 settings = get_settings()
 backend = BackendApiClient(settings.backend_api_base_url)
+weather = OpenWeatherClient(settings.openweather_api_key)
 server = AgentServer()
 
 
@@ -67,6 +68,7 @@ async def sarjy_agent(ctx: JobContext) -> None:
         room=ctx.room,
         agent=SarjyAssistant(
             backend=backend,
+            weather=weather,
             settings=settings,
             chat_ctx=chat_ctx,
         ),
@@ -75,19 +77,12 @@ async def sarjy_agent(ctx: JobContext) -> None:
         ),
     )
 
-    if username and not username.startswith("guest-"):
-        greeting = load_prompt(
-            "greeting",
+    await session.generate_reply(
+        instructions=greeting_instructions(
+            username,
             settings.greeting_prompt_version,
-            variables={"username": username},
-        )
-    else:
-        greeting = load_prompt(
-            "greeting_guest",
-            settings.greeting_prompt_version,
-        )
-
-    await session.generate_reply(instructions=greeting)
+        ),
+    )
 
 
 def _username_from_job(ctx: JobContext) -> str:

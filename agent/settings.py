@@ -24,7 +24,9 @@ class Settings(BaseSettings):
     backend_api_base_url: str = Field(min_length=1, default="http://localhost:8000")
     conversation_history_limit: int = Field(default=20, ge=1, le=100)
 
-    system_prompt_version: str = Field(min_length=1, default="1.1.0")
+    openweather_api_key: str = Field(min_length=1)
+
+    system_prompt_version: str = Field(min_length=1, default="1.2.0")
     greeting_prompt_version: str = Field(min_length=1, default="1.0.0")
 
 

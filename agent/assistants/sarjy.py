@@ -5,6 +5,7 @@ from __future__ import annotations
 from livekit.agents import Agent, ChatContext, RunContext, function_tool
 
 from integrations.backend import BackendApiClient
+from integrations.openweather import OpenWeatherClient
 from prompts import load_prompt
 from schemas.session import SessionData
 from settings import Settings
@@ -15,10 +16,12 @@ class SarjyAssistant(Agent):
         self,
         *,
         backend: BackendApiClient,
+        weather: OpenWeatherClient,
         settings: Settings,
         chat_ctx: ChatContext | None = None,
     ) -> None:
         self._backend = backend
+        self._weather = weather
         kwargs: dict = {
             "instructions": load_prompt("system", settings.system_prompt_version),
         }
@@ -57,3 +60,21 @@ class SarjyAssistant(Agent):
         username = context.userdata.username
         memories = await self._backend.recall_memories(username)
         return {"memories": memories}
+
+    @function_tool()
+    async def get_weather(
+        self,
+        context: RunContext[SessionData],
+        location: str,
+        when: str | None = None,
+    ) -> dict:
+        """Look up weather for a city or place.
+
+        Use for current conditions or a near-term forecast.
+
+        Args:
+            location: City or place name (e.g. Amman, Cairo, Paris France).
+            when: Optional timing hint such as tomorrow morning or Saturday
+                afternoon. Omit for current conditions.
+        """
+        return await self._weather.get_weather(location, when)
