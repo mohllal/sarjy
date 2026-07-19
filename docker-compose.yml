@@ -1,0 +1,57 @@
+# Local infrastructure for Sarjy.
+#
+# LiveKit SFU is NOT self-hosted here — use LiveKit Cloud
+# (LIVEKIT_URL / LIVEKIT_API_KEY / LIVEKIT_API_SECRET in .env).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sarjy-postgres
+    environment:
+      POSTGRES_USER: sarjy
+      POSTGRES_PASSWORD: sarjy
+      POSTGRES_DB: sarjy
+    ports:
+      - "5433:5432"
+    volumes:
+      - sarjy_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sarjy -d sarjy"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  adminer:
+    image: adminer:4
+    container_name: sarjy-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sarjy-backend
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://sarjy:sarjy@postgres:5432/sarjy
+      APP_ENV: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  sarjy_pgdata:

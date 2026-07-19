@@ -1,0 +1,1 @@
+"""Sarjy FastAPI application package."""
