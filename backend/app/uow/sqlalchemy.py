@@ -9,7 +9,12 @@ from app.uow.base import AbstractUnitOfWork
 
 
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
-    """Manages an AsyncSession lifecycle and transaction boundaries."""
+    """Manages an AsyncSession lifecycle and transaction boundaries.
+
+    Services must not call commit/rollback. On context exit:
+    - success → commit
+    - exception → rollback
+    """
 
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
@@ -31,6 +36,11 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         try:
             if exc_type is not None:
                 await self.rollback()
+            else:
+                await self.commit()
+        except Exception:
+            await self.rollback()
+            raise
         finally:
             await self.session.close()
             self.session = None
