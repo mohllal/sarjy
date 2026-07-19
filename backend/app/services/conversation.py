@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import delete, select
 
@@ -31,7 +31,7 @@ class ConversationService:
             session = uow.session
             assert session is not None
 
-            base = datetime.now(timezone.utc)
+            base = datetime.now(UTC)
             rows: list[ConversationMessage] = []
             for index, item in enumerate(request.messages):
                 row = ConversationMessage(
@@ -96,8 +96,6 @@ class ConversationService:
             assert session is not None
 
             result = await session.execute(
-                delete(ConversationMessage).where(
-                    ConversationMessage.username == username
-                )
+                delete(ConversationMessage).where(ConversationMessage.username == username)
             )
             return int(result.rowcount or 0)

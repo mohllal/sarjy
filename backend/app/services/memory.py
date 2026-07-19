@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import delete, select
 
@@ -51,9 +51,7 @@ class MemoryService:
             assert session is not None
 
             result = await session.execute(
-                select(Memory)
-                .where(Memory.username == username)
-                .order_by(Memory.key.asc())
+                select(Memory).where(Memory.username == username).order_by(Memory.key.asc())
             )
             rows = list(result.scalars().all())
             return MemoryListResponse(
@@ -66,9 +64,7 @@ class MemoryService:
             session = uow.session
             assert session is not None
 
-            result = await session.execute(
-                delete(Memory).where(Memory.username == username)
-            )
+            result = await session.execute(delete(Memory).where(Memory.username == username))
             return int(result.rowcount or 0)
 
     @staticmethod
@@ -80,7 +76,7 @@ class MemoryService:
             )
         )
         memory = result.scalar_one_or_none()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         if memory is None:
             memory = Memory(

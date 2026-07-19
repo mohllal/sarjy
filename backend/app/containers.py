@@ -2,12 +2,12 @@
 
 from dependency_injector import containers, providers
 
-from app.settings import Settings
 from app.db.engine import create_engine, create_session_factory
 from app.services.conversation import ConversationService
 from app.services.health import HealthService
 from app.services.livekit import LiveKitTokenService
 from app.services.memory import MemoryService
+from app.settings import Settings
 from app.uow.sqlalchemy import SqlAlchemyUnitOfWork
 
 

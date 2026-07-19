@@ -6,17 +6,17 @@ Create Date: 2026-07-19 17:04:11.882314
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "88843185b428"
-down_revision: Union[str, Sequence[str], None] = "1558bc53ad0b"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "1558bc53ad0b"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -51,10 +51,6 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_index(
-        op.f("ix_conversation_messages_username"), table_name="conversation_messages"
-    )
-    op.drop_index(
-        op.f("ix_conversation_messages_created_at"), table_name="conversation_messages"
-    )
+    op.drop_index(op.f("ix_conversation_messages_username"), table_name="conversation_messages")
+    op.drop_index(op.f("ix_conversation_messages_created_at"), table_name="conversation_messages")
     op.drop_table("conversation_messages")

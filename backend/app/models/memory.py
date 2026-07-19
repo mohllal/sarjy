@@ -15,9 +15,7 @@ class Memory(Base):
     """A key/value fact scoped to a username."""
 
     __tablename__ = "memories"
-    __table_args__ = (
-        UniqueConstraint("username", "key", name="uq_memories_username_key"),
-    )
+    __table_args__ = (UniqueConstraint("username", "key", name="uq_memories_username_key"),)
 
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),

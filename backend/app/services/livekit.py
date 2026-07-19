@@ -9,8 +9,8 @@ import uuid
 
 from livekit.api import AccessToken, RoomAgentDispatch, RoomConfiguration, VideoGrants
 
-from app.settings import Settings
 from app.schemas.livekit import TokenRequest, TokenResponse
+from app.settings import Settings
 
 _USERNAME_RE = re.compile(r"[^a-zA-Z0-9_-]+")
 

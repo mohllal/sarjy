@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from httpx import AsyncClient
 from sqlalchemy import select
@@ -54,7 +54,7 @@ async def test_list_messages(
     client: AsyncClient,
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
-    base = datetime.now(timezone.utc)
+    base = datetime.now(UTC)
     async with session_factory() as session:
         session.add_all(
             [
@@ -85,7 +85,7 @@ async def test_list_messages_respects_limit(
     client: AsyncClient,
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
-    base = datetime.now(timezone.utc)
+    base = datetime.now(UTC)
     async with session_factory() as session:
         session.add_all(
             [
@@ -132,7 +132,7 @@ async def test_clear_conversation(
                 username="kareem",
                 role="user",
                 content="hello",
-                created_at=datetime.now(timezone.utc),
+                created_at=datetime.now(UTC),
             )
         )
         await session.commit()
@@ -146,7 +146,7 @@ async def test_list_messages_scoped_by_username(
     client: AsyncClient,
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     async with session_factory() as session:
         session.add_all(
             [
