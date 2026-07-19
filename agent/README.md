@@ -55,5 +55,3 @@ make agent
 ```bash
 cd agent && uv run pytest -q
 ```
-
-Unit tests for OpenWeather (mocked HTTP) always run. The LiveKit behavioral weather tool test needs real `LIVEKIT_*` credentials and is skipped otherwise.

@@ -74,3 +74,9 @@ Local reload (Postgres still via Compose):
 make api
 # or: make api PORT=8001
 ```
+
+## Tests
+
+```bash
+cd backend && uv run pytest -q
+```
