@@ -12,6 +12,7 @@ dependencies = [
     "asyncpg>=0.30.0",
     "dependency-injector>=4.48.0",
     "livekit-api>=1.0.0",
+    "alembic>=1.18.5",
 ]
 
 [build-system]
@@ -27,6 +28,7 @@ dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
     "flake8>=7.1.0",
+    "aiosqlite>=0.22.1",
 ]
 
 [tool.pytest.ini_options]
