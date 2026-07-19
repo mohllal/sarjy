@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sarjy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="stage">
+      <p class="brand">Sarjy</p>
+      <h1 class="headline">Talk with your voice assistant</h1>
+      <p class="lede">
+        Enter a username to keep your sessions, or leave it blank and Sarjy will
+        create one for you.
+      </p>
+
+      <form id="join-form" class="join">
+        <label class="field">
+          <span>Username</span>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            placeholder="optional — e.g. kareem"
+            maxlength="64"
+          />
+        </label>
+        <button id="start-btn" type="submit">Start</button>
+      </form>
+
+      <p id="status" class="status" role="status">Ready</p>
+      <p id="identity" class="identity" hidden></p>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
