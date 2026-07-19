@@ -18,7 +18,17 @@ app/
 alembic/            # DB migrations
 ```
 
-## Persistence API
+## APIs
+
+API documentation is available at <http://localhost:8000/docs>.
+
+### LiveKit API
+
+| Method   | Path                                 | Purpose                            |
+|----------|--------------------------------------|------------------------------------|
+| `POST`   | `/livekit/token`                     | Create a LiveKit token             |
+
+### Persistence APIs
 
 Memories and conversation history are keyed by `username`.
 
@@ -31,7 +41,12 @@ Memories and conversation history are keyed by `username`.
 | `GET`    | `/conversations/{username}/messages` | Recent history (`limit`/`offset`)  |
 | `DELETE` | `/conversations/{username}`          | Clear history                      |
 
-`GET /ready` returns 503 if Postgres is unreachable.
+### Health APIs
+
+| Path          | Purpose                                        |
+|---------------|------------------------------------------------|
+| `GET /health` | Check if the server is running                 |
+| `GET /ready`  | Check if the server is ready to serve requests |
 
 ## Migrations
 
