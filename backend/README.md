@@ -7,7 +7,7 @@ FastAPI server for the Sarjy voice assistant.
 ```text
 app/
   main.py           # app factory + lifespan
-  config.py         # pydantic-settings
+  settings.py       # pydantic-settings
   containers.py     # DI container
   db/               # engine, session factory, Base
   uow/              # Unit of Work

@@ -2,7 +2,7 @@
 
 from dependency_injector import containers, providers
 
-from app.config import Settings
+from app.settings import Settings
 from app.db.engine import create_engine, create_session_factory
 from app.services.health import HealthService
 from app.services.livekit import LiveKitTokenService

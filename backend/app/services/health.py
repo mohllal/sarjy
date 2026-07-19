@@ -4,7 +4,7 @@ from collections.abc import Callable
 
 from sqlalchemy import text
 
-from app.config import Settings
+from app.settings import Settings
 from app.schemas.health import HealthResponse, ReadyResponse
 from app.uow.sqlalchemy import SqlAlchemyUnitOfWork
 
