@@ -8,7 +8,6 @@ from livekit.agents import ChatContext
 
 from integrations.backend import BackendApiClient
 
-
 logger = logging.getLogger("sarjy.session.history")
 
 

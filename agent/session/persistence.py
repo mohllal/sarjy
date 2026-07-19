@@ -11,7 +11,6 @@ from livekit.agents.llm import ChatMessage
 from integrations.backend import BackendApiClient
 from schemas.session import SessionData
 
-
 logger = logging.getLogger("sarjy.session.persistence")
 
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from livekit.agents import AgentSession, RunResult, inference
 
-
 from assistants.sarjy import SarjyAssistant
 from schemas.session import SessionData
 from session.greeting import greeting_instructions

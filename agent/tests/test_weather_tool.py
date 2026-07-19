@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 
-import pytest
 from livekit.agents import AgentSession, inference, mock_tools
 
 from assistants.sarjy import SarjyAssistant
@@ -19,10 +18,7 @@ from settings import Settings
 def _mock_weather(context, location: str, when: str | None = None) -> str:
     """Include RunContext in the signature so location binds correctly."""
     _ = context, when
-    return (
-        f"Weather in {location}: clear sky, 28 degrees Celsius, "
-        "light wind, low chance of rain."
-    )
+    return f"Weather in {location}: clear sky, 28 degrees Celsius, light wind, low chance of rain."
 
 
 async def test_weather_question_calls_get_weather(
@@ -40,9 +36,7 @@ async def test_weather_question_calls_get_weather(
         await session.start(assistant)
 
         with mock_tools(SarjyAssistant, {"get_weather": _mock_weather}):
-            result = await session.run(
-                user_input="What's the weather in Amman right now?"
-            )
+            result = await session.run(user_input="What's the weather in Amman right now?")
 
         call = result.expect.next_event().is_function_call(name="get_weather")
         raw_args = call.event().item.arguments

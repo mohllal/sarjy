@@ -63,9 +63,7 @@ async def test_save_memory_success(client: BackendApiClient) -> None:
     args, kwargs = session.request.call_args
     assert args[0] == "PUT"
     assert args[1] == "http://backend:8000/memories/kareem"
-    assert kwargs["json"] == {
-        "facts": [{"key": "favorite_color", "value": "blue"}]
-    }
+    assert kwargs["json"] == {"facts": [{"key": "favorite_color", "value": "blue"}]}
 
 
 async def test_save_memory_raises_tool_error_on_http_failure(

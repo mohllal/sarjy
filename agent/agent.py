@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 import json
+import logging
 
 from livekit import agents
 from livekit.agents import (

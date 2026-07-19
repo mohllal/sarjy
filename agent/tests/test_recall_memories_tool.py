@@ -6,7 +6,6 @@ https://docs.livekit.io/agents/start/testing/test-framework/
 
 from __future__ import annotations
 
-import pytest
 from livekit.agents import AgentSession, inference, mock_tools
 
 from assistants.sarjy import SarjyAssistant

@@ -32,10 +32,7 @@ class BackendApiClient:
             f"/memories/{username}",
             error_message="Could not recall memories right now.",
         )
-        return [
-            {"key": item["key"], "value": item["value"]}
-            for item in data.get("memories", [])
-        ]
+        return [{"key": item["key"], "value": item["value"]} for item in data.get("memories", [])]
 
     async def list_messages(
         self,
@@ -53,8 +50,7 @@ class BackendApiClient:
         if data is None:
             return []
         return [
-            {"role": item["role"], "content": item["content"]}
-            for item in data.get("messages", [])
+            {"role": item["role"], "content": item["content"]} for item in data.get("messages", [])
         ]
 
     async def append_message(

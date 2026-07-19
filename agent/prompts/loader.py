@@ -26,8 +26,7 @@ class Prompt:
         missing = [name for name in self.variables if name not in kwargs]
         if missing:
             raise ValueError(
-                f"Prompt '{self.name}' v{self.version} missing variables: "
-                f"{', '.join(missing)}"
+                f"Prompt '{self.name}' v{self.version} missing variables: {', '.join(missing)}"
             )
         if not self.variables:
             return self.body
@@ -45,8 +44,7 @@ def load_prompt(
     if variables is None:
         if prompt.variables:
             raise ValueError(
-                f"Prompt '{name}' v{version} requires variables: "
-                f"{', '.join(prompt.variables)}"
+                f"Prompt '{name}' v{version} requires variables: {', '.join(prompt.variables)}"
             )
         return prompt.body
     return prompt.render(**variables)
@@ -67,13 +65,11 @@ def get_prompt(name: str, version: str) -> Prompt:
 
     if meta_name and meta_name != name:
         raise ValueError(
-            f"Prompt file {path} front matter name {meta_name!r} "
-            f"does not match {name!r}"
+            f"Prompt file {path} front matter name {meta_name!r} does not match {name!r}"
         )
     if meta_version and meta_version != version:
         raise ValueError(
-            f"Prompt file {path} front matter version {meta_version!r} "
-            f"does not match {version!r}"
+            f"Prompt file {path} front matter version {meta_version!r} does not match {version!r}"
         )
 
     declared = post.get("variables") or []

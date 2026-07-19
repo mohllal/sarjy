@@ -1,4 +1,4 @@
-.PHONY: up down api agent frontend test install migrate
+.PHONY: up down api agent frontend test install migrate lint format
 
 PORT ?= 8000
 FRONTEND_PORT ?= 3000
@@ -29,3 +29,11 @@ frontend:
 test:
 	cd backend && uv sync --all-groups && uv run pytest -q
 	cd agent && uv sync --all-groups && uv run pytest -q
+
+format:
+	cd backend && uv sync --all-groups && uv run ruff format .
+	cd agent && uv sync --all-groups && uv run ruff format .
+
+lint:
+	cd backend && uv sync --all-groups && uv run ruff check .
+	cd agent && uv sync --all-groups && uv run ruff check .
