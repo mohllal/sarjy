@@ -28,17 +28,20 @@ class OpenWeatherClient:
             raise ValueError("OpenWeather API key is required")
         self._api_key = api_key.strip()
 
+    async def resolve_location(self, location: str) -> dict[str, Any]:
+        """Geocode a city/area into a canonical label plus coordinates."""
+        place = location.strip()
+        if not place:
+            raise ToolError("Please provide a city or location.")
+        return await self._geocode(place)
+
     async def get_weather(
         self,
         location: str,
         when: str | None = None,
     ) -> dict[str, Any]:
-        place = location.strip()
-        if not place:
-            raise ToolError("Please provide a city or location for the weather.")
-
         when_key = (when or "now").strip().lower()
-        coords = await self._geocode(place)
+        coords = await self.resolve_location(location)
 
         if when_key in _CURRENT_WHEN:
             return await self._current(coords)

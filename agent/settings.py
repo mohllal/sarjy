@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     openweather_api_key: str = Field(min_length=1)
 
-    system_prompt_version: str = Field(min_length=1, default="1.2.0")
+    system_prompt_version: str = Field(min_length=1, default="1.3.0")
     greeting_prompt_version: str = Field(min_length=1, default="1.0.0")
 
 

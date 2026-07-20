@@ -1,4 +1,4 @@
-"""Unit tests for BackendApiClient (mocked HTTP)."""
+"""Tests for BackendApiClient (mocked HTTP)."""
 
 from __future__ import annotations
 

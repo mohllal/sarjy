@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
+import logging
+
 from livekit.agents import Agent, ChatContext, RunContext, function_tool
 
 from integrations.backend import BackendApiClient
 from integrations.openweather import OpenWeatherClient
 from prompts import load_prompt
+from schemas.outing import OutingCancelled, ProposeResult
 from schemas.session import SessionData
 from settings import Settings
+from workflows.outing import build_outing_task_group
+
+logger = logging.getLogger("sarjy.assistants")
 
 
 class SarjyAssistant(Agent):
@@ -78,3 +84,55 @@ class SarjyAssistant(Agent):
                 afternoon. Omit for current conditions.
         """
         return await self._weather.get_weather(location, when)
+
+    @function_tool()
+    async def plan_weekend_outing(self, context: RunContext[SessionData]) -> str:
+        """Start the Weekend Outing Planner multistep flow.
+
+        Call when the user asks to plan a weekend outing or similar
+        (plan my weekend, help me plan an outing, what should I do this weekend).
+        """
+        outing = context.userdata.outing
+        outing.status = "in_progress"
+        outing.city = None
+        outing.timing = None
+        outing.vibe = None
+        outing.weather_summary = None
+        outing.proposal = None
+
+        group = build_outing_task_group(
+            weather=self._weather,
+            chat_ctx=self.chat_ctx.copy(exclude_instructions=True),
+            userdata=context.userdata,
+        )
+
+        try:
+            results = await group
+        except OutingCancelled as exc:
+            outing.status = "cancelled"
+            logger.info("outing planner cancelled: %s", exc.reason)
+            return "Outing planning cancelled. Back to normal chat."
+
+        task_results = results.task_results
+        propose = task_results.get("propose")
+        if isinstance(propose, ProposeResult) and propose.confirmed:
+            summary = (
+                f"Outing in {outing.city} ({outing.timing}, {outing.vibe}): "
+                f"{propose.proposal} Weather: {propose.weather_summary}"
+            )
+            try:
+                await self._backend.save_memory(
+                    context.userdata.username,
+                    "last_outing_plan",
+                    summary,
+                )
+            except Exception:  # noqa: BLE001
+                logger.warning("failed to persist last_outing_plan", exc_info=True)
+
+            return (
+                f"Outing confirmed for {outing.city}. "
+                f"{propose.proposal} "
+                "Saved as last_outing_plan for later."
+            )
+
+        return "Outing planner finished without a confirmed proposal."

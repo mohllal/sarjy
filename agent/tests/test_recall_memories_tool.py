@@ -1,8 +1,4 @@
-"""Behavioral tests: recall_memories tool invocation.
-
-Verified against:
-https://docs.livekit.io/agents/start/testing/test-framework/
-"""
+"""Tests for recall_memories tool invocation."""
 
 from __future__ import annotations
 

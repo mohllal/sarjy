@@ -1,8 +1,4 @@
-"""Behavioral tests: save_memory tool invocation.
-
-Verified against:
-https://docs.livekit.io/agents/start/testing/test-framework/
-"""
+"""Tests for save_memory tool invocation."""
 
 from __future__ import annotations
 

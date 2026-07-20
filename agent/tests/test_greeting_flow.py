@@ -1,4 +1,4 @@
-"""Behavioral tests: session greeting via generate_reply."""
+"""Tests for session greeting via generate_reply."""
 
 from __future__ import annotations
 

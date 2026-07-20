@@ -1,4 +1,4 @@
-"""Unit tests for OpenWeatherClient (mocked HTTP)."""
+"""Tests for OpenWeatherClient."""
 
 from __future__ import annotations
 
@@ -40,6 +40,20 @@ def _session_for(*responses: _FakeResponse) -> MagicMock:
 @pytest.fixture
 def client() -> OpenWeatherClient:
     return OpenWeatherClient("test-key")
+
+
+async def test_resolve_location_success(client: OpenWeatherClient) -> None:
+    geocode = _FakeResponse(
+        status=200,
+        payload=[{"name": "Amman", "lat": 31.95, "lon": 35.91, "country": "JO"}],
+    )
+    session = _session_for(geocode)
+
+    with patch.object(utils.http_context, "http_session", return_value=session):
+        result = await client.resolve_location("Amman")
+
+    assert result["label"] == "Amman, JO"
+    assert result["lat"] == 31.95
 
 
 async def test_get_weather_current_success(client: OpenWeatherClient) -> None:

@@ -1,8 +1,4 @@
-"""Behavioral tests: get_weather tool invocation.
-
-Verified against:
-https://docs.livekit.io/agents/start/testing/test-framework/
-"""
+"""Tests for get_weather tool invocation."""
 
 from __future__ import annotations
 
