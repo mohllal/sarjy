@@ -1,6 +1,13 @@
-# Sarjy backend
+# Sarjy Backend
 
-FastAPI server for the Sarjy voice assistant.
+FastAPI service that mints LiveKit room tokens and persists cross-session memory and conversation history.
+
+Does **not** handle WebRTC media, STT/LLM/TTS, or weather — those live in LiveKit Cloud and the agent worker.
+
+```text
+Browser ── POST /livekit/token ──► Backend ──► LiveKit Cloud (JWT)
+Agent   ── memories / conversations ──► Backend ──► Postgres
+```
 
 ## Layout
 
@@ -11,72 +18,73 @@ app/
   containers.py     # DI container
   db/               # engine, session factory, Base
   uow/              # Unit of Work
-  models/           # ORM models (memories, conversation_messages)
-  schemas/          # Pydantic response/request models
+  models/           # ORM (memories, conversation_messages)
+  schemas/          # request/response models
   services/         # business logic
-  routes/           # HTTP routers (one module per file)
-alembic/            # DB migrations
+  routes/           # HTTP routers
+alembic/            # migrations
+tests/
 ```
+
+## Setup
+
+Prerequisites: Python 3.11+, [uv](https://docs.astral.sh/uv/) or Docker and Docker Compose, Postgres (Compose recommended), LiveKit Cloud credentials in the repo-root `.env`.
+
+```bash
+# from repo root
+cp .env.example .env   # fill LIVEKIT_* values
+
+# Full stack
+make up
+
+# Or API alone (Postgres via Compose)
+docker compose up -d postgres
+make migrate
+make api                # http://localhost:8000
+
+# Run tests
+cd backend && uv run pytest -q
+```
+
+Swagger docs: <http://localhost:8000/docs>
+
+## Configuration
+
+Settings load from repo-root `.env` (or `backend/.env`). Relevant variables:
+
+| Variable                                 | Purpose                         | Default / notes                            |
+|------------------------------------------|---------------------------------|--------------------------------------------|
+| `DATABASE_URL`                           | Async Postgres URL              | default already provided in `.env.example` |
+| `LIVEKIT_URL`                            | LiveKit Cloud WebSocket URL     | required                                   |
+| `LIVEKIT_API_KEY` / `LIVEKIT_API_SECRET` | Token signing                   | required                                   |
+| `LIVEKIT_AGENT_NAME`                     | Agent name embedded in dispatch | `sarjy`                                    |
+| `CORS_ORIGINS`                           | Comma-separated browser origins | `http://localhost:3000,...`                |
+| `APP_ENV`                                | Environment label               | `development`                              |
+
+In Compose, `DATABASE_URL` is overridden to reach the `postgres` service.
 
 ## APIs
 
-API documentation is available at <http://localhost:8000/docs>.
+### LiveKit
 
-### LiveKit API
+| Method | Path             | Purpose                                                            |
+|--------|------------------|--------------------------------------------------------------------|
+| `POST` | `/livekit/token` | Mint JWT; body may include optional `username` (blank → `guest-…`) |
 
-| Method   | Path                                 | Purpose                            |
-|----------|--------------------------------------|------------------------------------|
-| `POST`   | `/livekit/token`                     | Create a LiveKit token             |
+### Persistence (`username`-scoped)
 
-### Persistence APIs
+| Method   | Path                                 | Purpose                             |
+|----------|--------------------------------------|-------------------------------------|
+| `PUT`    | `/memories/{username}`               | Upsert key/value facts              |
+| `GET`    | `/memories/{username}`               | List facts                          |
+| `DELETE` | `/memories/{username}`               | Clear facts                         |
+| `POST`   | `/conversations/{username}/messages` | Append turn(s)                      |
+| `GET`    | `/conversations/{username}/messages` | Recent history (`limit` / `offset`) |
+| `DELETE` | `/conversations/{username}`          | Clear history                       |
 
-Memories and conversation history are keyed by `username`.
+### Health
 
-| Method   | Path                                 | Purpose                            |
-|----------|--------------------------------------|------------------------------------|
-| `PUT`    | `/memories/{username}`               | Upsert one or more key/value facts |
-| `GET`    | `/memories/{username}`               | List all facts for username        |
-| `DELETE` | `/memories/{username}`               | Clear all facts for username       |
-| `POST`   | `/conversations/{username}/messages` | Append turn(s)                     |
-| `GET`    | `/conversations/{username}/messages` | Recent history (`limit`/`offset`)  |
-| `DELETE` | `/conversations/{username}`          | Clear history                      |
-
-### Health APIs
-
-| Path          | Purpose                                        |
-|---------------|------------------------------------------------|
-| `GET /health` | Check if the server is running                 |
-| `GET /ready`  | Check if the server is ready to serve requests |
-
-## Migrations
-
-```bash
-# from repo root
-make migrate
-```
-
-Compose backend entrypoint runs `alembic upgrade head` before uvicorn.
-
-## Run
-
-Via Compose (recommended for the full stack):
-
-```bash
-# from repo root
-make up
-curl http://localhost:8000/health
-curl http://localhost:8000/ready
-```
-
-Local reload (Postgres still via Compose):
-
-```bash
-make api
-# or: make api PORT=8001
-```
-
-## Tests
-
-```bash
-cd backend && uv run pytest -q
-```
+| Path          | Purpose                   |
+|---------------|---------------------------|
+| `GET /health` | Process up                |
+| `GET /ready`  | Ready to serve (incl. DB) |
