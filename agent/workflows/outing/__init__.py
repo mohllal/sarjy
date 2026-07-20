@@ -1,4 +1,4 @@
-"""Weekend Outing Planner TaskGroup."""
+"""Weekend outing planner TaskGroup."""
 
 from workflows.outing.group import build_outing_task_group
 from workflows.outing.tasks import (

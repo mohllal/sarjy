@@ -87,7 +87,7 @@ class SarjyAssistant(Agent):
 
     @function_tool()
     async def plan_weekend_outing(self, context: RunContext[SessionData]) -> str:
-        """Start the Weekend Outing Planner multistep flow.
+        """Start the weekend outing planner multistep flow.
 
         Call when the user asks to plan a weekend outing or similar
         (plan my weekend, help me plan an outing, what should I do this weekend).

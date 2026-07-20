@@ -1,4 +1,4 @@
-"""AgentTask steps for the Weekend Outing Planner."""
+"""AgentTask steps for the weekend outing planner."""
 
 from __future__ import annotations
 

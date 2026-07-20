@@ -1,4 +1,4 @@
-"""Build the Weekend Outing Planner TaskGroup."""
+"""Build the weekend outing planner TaskGroup."""
 
 from __future__ import annotations
 

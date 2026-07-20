@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class OutingPlanState:
-    """In-progress / completed Weekend Outing Planner fields.
+    """In-progress / completed weekend outing planner fields.
 
     Status is one of: idle | in_progress | completed | cancelled.
     """

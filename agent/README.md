@@ -1,6 +1,6 @@
 # Sarjy Agent
 
-LiveKit Agents worker that runs Sarjy’s voice pipeline: STT → LLM → TTS (LiveKit Inference), function tools, and the Weekend Outing Planner workflow. Dispatched into a room when a user joins via the frontend.
+LiveKit Agents worker that runs Sarjy’s voice pipeline: STT → LLM → TTS (LiveKit Inference), function tools, and the weekend outing planner workflow. Dispatched into a room when a user joins via the frontend.
 
 Does **not** mint tokens or own database — identity and persistence go through the FastAPI backend. Media and model inference go through LiveKit Cloud.
 
@@ -20,7 +20,7 @@ agent/
   schemas/                 # SessionData + outing typed results
   integrations/            # BackendApiClient, OpenWeatherClient
   assistants/              # SarjyAssistant + function tools
-  workflows/outing/        # Weekend Outing Planner TaskGroup
+  workflows/outing/        # Weekend outing planner TaskGroup
   session/                 # history load, turn persistence, greeting
   prompts/                 # versioned prompt files
   tests/
@@ -35,7 +35,7 @@ agent/
 | `get_weather(location, when?)` | Current / near-term forecast (OpenWeather) |
 | `plan_weekend_outing`          | Enter the Outing Planner TaskGroup         |
 
-## Weekend Outing Planner
+## Weekend outing planner
 
 Trigger phrases (system prompt `1.3.0`): e.g. "plan my weekend", "help me plan an outing".
 
@@ -44,7 +44,7 @@ Trigger phrases (system prompt `1.3.0`): e.g. "plan my weekend", "help me plan a
 3. **Vibe**: outdoor / indoor / food / flexible
 4. **Propose**: weather + 1–2 ideas; confirm may persist `last_outing_plan`
 
-### Outing Planner TaskGroup Flow
+### Outing planner TaskGroup flow
 
 ```mermaid
 sequenceDiagram

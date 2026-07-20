@@ -1,4 +1,4 @@
-"""Typed results and control exceptions for the Weekend Outing Planner."""
+"""Typed results and control exceptions for the weekend outing planner."""
 
 from __future__ import annotations
 

@@ -1,6 +1,8 @@
 # Sarjy
 
-Sarjy is a web-accessible voice assistant that listens and responds in real time, remembers facts across sessions, answers weather questions with live data, and runs a multistep Weekend Outing Planner workflow.
+Sarjy is a web-accessible voice assistant that listens and responds in real time, remembers facts across sessions, answers weather questions with live data, and runs a multistep weekend outing planner workflow.
+
+![Sarjy](screenshots/sarjy.png)
 
 It is built as three cooperating services — a browser client, a FastAPI backend, and a LiveKit Agents worker — plus Postgres for durable state and LiveKit Cloud for realtime media and model inference.
 
@@ -14,7 +16,7 @@ For a full technical deep dive — components, sequence diagrams, data models, a
 2. Cross-session memory: key/value facts in Postgres, keyed by `username`, via agent tools
 3. Conversation continuity: recent turns loaded on join, new turns persisted during the call
 4. Weather: OpenWeatherMap current / forecast via `get_weather`
-5. Weekend Outing Planner: LiveKit `TaskGroup`: location → timing → vibe → weather + proposal
+5. Weekend outing planner: LiveKit `TaskGroup`: location → timing → vibe → weather + proposal
 
 Identity is a single **`username`**. Enter one in the UI, or leave it blank and the backend issues a `guest-…` id stored in `localStorage`. The same username scopes memories, history, and agent session metadata.
 
